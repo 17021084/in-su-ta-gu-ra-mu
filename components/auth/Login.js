@@ -39,7 +39,7 @@ export default class Login extends Component {
           onChangeText={(password) => this.setState({ password })}
         />
 
-        <Button title={"Sign up"} onPress={() => this.onSignUp()} />
+        <Button title={"Sign In"} onPress={() => this.onSignUp()} />
       </View>
     );
   }

@@ -6,9 +6,17 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import RootReducers from "./redux/reducers";
+
+const store = createStore(RootReducers, applyMiddleware(thunk));
+
 import Landing from "./components/auth/Landing";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import Main from "./components/Main";
 
 const Stack = createStackNavigator();
 
@@ -69,7 +77,11 @@ class App extends Component {
     }
 
     // logged in
-    return <Text> logged in </Text>;
+    return (
+      <Provider store={store}>
+        <Main />
+      </Provider>
+    );
   }
 }
 
