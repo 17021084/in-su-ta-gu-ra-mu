@@ -8,7 +8,6 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Feed from "./main/Feed";
 import Profile from "./main/Profile";
-import Add from "./main/Add";
 
 const BottonTab = createMaterialBottomTabNavigator();
 const BottonIconSizes = 25;
