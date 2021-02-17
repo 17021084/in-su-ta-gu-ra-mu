@@ -12,6 +12,8 @@ import Add from "./main/Add";
 
 const BottonTab = createBottomTabNavigator();
 
+const AddNull = () => null;
+
 class Main extends Component {
   componentDidMount() {
     this.props.fetchUser();
@@ -30,10 +32,16 @@ class Main extends Component {
     // null ... result because in first render Didmount didnt run
     // <Button title={"logout"} onPress={this.onPressLogOut.bind(this)} />
     return (
-      <BottonTab.Navigator>
+      <BottonTab.Navigator initialRouteName="Feed">
         <BottonTab.Screen
-          name={"Add"}
-          component={Add}
+          listeners={({ navigation }) => ({
+            tabPress: (event) => {
+              event.preventDefault();
+              navigation.navigate("Add"); //in previous stack screen
+            },
+          })}
+          name={"Add"} // it doesnt have botton bar, because it in previous stack screen
+          component={AddNull}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="plus-box" size={32} color={color} />
@@ -55,7 +63,7 @@ class Main extends Component {
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons
-                name="account-circle "
+                name="account-circle"
                 size={32}
                 color={color}
               />
