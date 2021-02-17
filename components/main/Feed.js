@@ -8,7 +8,7 @@ export default class Feed extends Component {
     return (
       <View>
         <MaterialCommunityIcons name="home" size={32} color="green" />
-        <Ionicons name="md-checkmark-circle" size={32} color="green" />;
+        <Ionicons name="md-checkmark-circle" size={32} color="green" />
       </View>
     );
   }

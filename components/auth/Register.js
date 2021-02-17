@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Button, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import firebase from "firebase";
+import "firebase/firestore";
 
 export default class Register extends Component {
   constructor(props) {
