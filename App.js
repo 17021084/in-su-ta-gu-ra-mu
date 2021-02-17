@@ -17,6 +17,7 @@ import Landing from "./components/auth/Landing";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Main from "./components/Main";
+import Add from "./components/main/Add";
 
 const Stack = createStackNavigator();
 
@@ -63,7 +64,7 @@ class App extends Component {
     if (!loggedIn) {
       return (
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator initialRouteName={"Landing"}>
             <Stack.Screen
               name="Landing"
               component={Landing}
@@ -79,7 +80,23 @@ class App extends Component {
     // logged in
     return (
       <Provider store={store}>
-        <Main />
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={"Main"}>
+            <Stack.Screen
+              name="Main"
+              component={Main}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Add_No_Buttom_Tab"
+              component={Add}
+              options={{
+                headerShown: true,
+                headerTitle: "Add",
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
       </Provider>
     );
   }
