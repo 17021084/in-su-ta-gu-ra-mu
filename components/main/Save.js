@@ -15,7 +15,7 @@ import * as firebase from "firebase";
 const windowWidth = Dimensions.get("window").width;
 const containerPadding = 10;
 
-export default function Save({ route }) {
+export default function Save({ route, navigation }) {
   const image = route.params.image;
   const [caption, setCaption] = useState("");
 
@@ -24,6 +24,7 @@ export default function Save({ route }) {
     const response = await fetch(image);
     // convert to blob = binary large object
     const blob = await response.blob();
+    //random image name,it prevent same name cause error
     const childPath = `posts/${firebase.auth().currentUser.uid}/${Math.random(
       36
     ).toString()}`;
@@ -38,12 +39,28 @@ export default function Save({ route }) {
     };
     const taskCompleted = () => {
       task.snapshot.ref.getDownloadURL().then((snapshot) => {
+        savePostData(snapshot);
         console.log(snapshot);
       });
     };
 
     //Progress status
     task.on("state_changed", taskProgress, taskError, taskCompleted);
+  };
+
+  const savePostData = (downloadURL) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userPosts")
+      .add({
+        downloadURL,
+        caption,
+        creation: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then(() => navigation.popToTop())
+      .catch((error) => console.log(error));
   };
 
   //fix keyboard hide in put field, search :KeyboardAvoidingView
