@@ -63,7 +63,7 @@ class App extends Component {
     if (!loggedIn) {
       return (
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator initialRouteName={"Landing"}>
             <Stack.Screen
               name="Landing"
               component={Landing}
@@ -79,7 +79,15 @@ class App extends Component {
     // logged in
     return (
       <Provider store={store}>
-        <Main />
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={"Main"}>
+            <Stack.Screen
+              name="Main"
+              component={Main}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
       </Provider>
     );
   }

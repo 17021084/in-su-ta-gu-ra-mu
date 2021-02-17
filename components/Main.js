@@ -4,6 +4,14 @@ import { connect } from "react-redux";
 import { fetchUser } from "../redux/actions";
 import { bindActionCreators } from "redux";
 import firebase from "firebase";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Feed from "./main/Feed";
+import Profile from "./main/Profile";
+import Add from "./main/Add";
+
+const BottonTab = createBottomTabNavigator();
+
 class Main extends Component {
   componentDidMount() {
     this.props.fetchUser();
@@ -20,11 +28,41 @@ class Main extends Component {
 
   render() {
     // null ... result because in first render Didmount didnt run
-    console.log(this.props.currentUser);
+    // <Button title={"logout"} onPress={this.onPressLogOut.bind(this)} />
     return (
-      <View>
-        <Button title={"logout"} onPress={this.onPressLogOut.bind(this)} />
-      </View>
+      <BottonTab.Navigator>
+        <BottonTab.Screen
+          name={"Add"}
+          component={Add}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="plus-box" size={32} color={color} />
+            ),
+          }}
+        />
+        <BottonTab.Screen
+          name={"Feed"}
+          component={Feed}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="home" size={32} color={color} />
+            ),
+          }}
+        />
+        <BottonTab.Screen
+          name={"Profile"}
+          component={Profile}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                name="account-circle "
+                size={32}
+                color={color}
+              />
+            ),
+          }}
+        />
+      </BottonTab.Navigator>
     );
   }
 }
