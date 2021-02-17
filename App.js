@@ -88,9 +88,12 @@ class App extends Component {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="Add"
+              name="Add_No_Buttom_Tab"
               component={Add}
-              options={{ headerShown: true }}
+              options={{
+                headerShown: true,
+                headerTitle: "Add",
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>
