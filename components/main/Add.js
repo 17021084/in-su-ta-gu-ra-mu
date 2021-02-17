@@ -5,7 +5,7 @@ import * as ImagePicker from "expo-image-picker";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-export default function App() {
+export default function Add({ navigation }) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -61,8 +61,7 @@ export default function App() {
         ratio={"16:9"}
       ></Camera>
       <View style={styles.buttonContainer}>
-        <Button
-          title="FLip button"
+        <TouchableOpacity
           style={styles.button}
           onPress={() => {
             setType(
@@ -71,14 +70,35 @@ export default function App() {
                 : Camera.Constants.Type.back
             );
           }}
-        />
-        <Button
-          title="shoot"
+        >
+          <MaterialCommunityIcons
+            name="camera-retake-outline"
+            size={50}
+            color={"pink"}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.button}
           onPress={() => {
             takePicture();
           }}
-        />
+        >
+          <MaterialCommunityIcons
+            name="checkbox-blank-circle-outline"
+            size={100}
+            color={"pink"}
+          />
+        </TouchableOpacity>
+        {image && (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("Save", { image });
+            }}
+          >
+            <MaterialCommunityIcons name="upload" size={30} color={"pink"} />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
@@ -91,7 +111,7 @@ export default function App() {
             <MaterialCommunityIcons
               name="picture-in-picture-bottom-right"
               size={100}
-              color={"blue"}
+              color={"pink"}
             />
           )}
         </TouchableOpacity>

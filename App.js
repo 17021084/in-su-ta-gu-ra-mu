@@ -16,6 +16,7 @@ const store = createStore(RootReducers, applyMiddleware(thunk));
 import Landing from "./components/auth/Landing";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
+import Save from "./components/main/Save";
 import Main from "./components/Main";
 import Add from "./components/main/Add";
 
@@ -93,6 +94,14 @@ class App extends Component {
               options={{
                 headerShown: true,
                 headerTitle: "Add",
+              }}
+            />
+            <Stack.Screen
+              name="Save"
+              component={Save}
+              options={{
+                headerShown: true,
+                headerTitle: "Save Post",
               }}
             />
           </Stack.Navigator>
