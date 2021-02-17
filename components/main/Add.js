@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Button, Image } from "react-native";
 import { Camera } from "expo-camera";
+import * as ImagePicker from "expo-image-picker";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function App() {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+  const [hasGalleryPermission, setHasGalleryPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [camera, setCamera] = useState(null);
   const [image, setImage] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === "granted");
+      const cameraStatus = await Camera.requestPermissionsAsync();
+      setHasCameraPermission(cameraStatus.status === "granted");
+      const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      setHasGalleryPermission(galleryStatus.status === "granted");
     })();
   }, []);
 
@@ -23,11 +29,26 @@ export default function App() {
     }
   };
 
-  if (hasPermission === null) {
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  if (hasCameraPermission === null || hasGalleryPermission === null) {
     return <View />;
   }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+  if (hasCameraPermission === false || hasGalleryPermission === false) {
+    return <Text>No access to camera or gallery</Text>;
   }
   return (
     <View style={styles.container}>
@@ -58,9 +79,22 @@ export default function App() {
             takePicture();
           }}
         />
-        {image && (
-          <Image source={{ uri: image }} style={styles.previewPicture} />
-        )}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            pickImage();
+          }}
+        >
+          {(image && (
+            <Image source={{ uri: image }} style={styles.previewPicture} />
+          )) || (
+            <MaterialCommunityIcons
+              name="picture-in-picture-bottom-right"
+              size={100}
+              color={"blue"}
+            />
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -68,7 +102,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: "white",
   },
   camera: {
     flex: 1,
