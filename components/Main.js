@@ -8,6 +8,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Feed from "./main/Feed";
 import Profile from "./main/Profile";
+import Search from "./main/Search";
 
 const BottonTab = createMaterialBottomTabNavigator();
 const BottonIconSizes = 25;
@@ -54,6 +55,19 @@ class Main extends Component {
           }}
         />
         <BottonTab.Screen
+          name={"Seach"}
+          component={Search}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                name="magnify"
+                size={BottonIconSizes}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <BottonTab.Screen
           name={"Feed"}
           component={Feed}
           options={{
@@ -67,7 +81,16 @@ class Main extends Component {
           }}
         />
         <BottonTab.Screen
+          listeners={({ navigation }) => ({
+            tabPress: (event) => {
+              event.preventDefault();
+              navigation.navigate("Profile", {
+                uid: firebase.auth().currentUser.uid,
+              }); //in previous stack screen
+            },
+          })}
           name={"Profile"}
+          navigation={this.props.navigation}
           component={Profile}
           options={{
             tabBarIcon: ({ color, size }) => (

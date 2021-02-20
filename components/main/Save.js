@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,11 +11,13 @@ import {
 } from "react-native";
 // wildcard import
 import * as firebase from "firebase";
+import { connect } from "react-redux";
+import { addPost } from "../../redux/actions";
 
 const windowWidth = Dimensions.get("window").width;
 const containerPadding = 10;
 
-export default function Save({ route, navigation }) {
+function Save({ route, navigation }) {
   const image = route.params.image;
   const [caption, setCaption] = useState("");
 
@@ -40,7 +42,6 @@ export default function Save({ route, navigation }) {
     const taskCompleted = () => {
       task.snapshot.ref.getDownloadURL().then((snapshot) => {
         savePostData(snapshot);
-        console.log(snapshot);
       });
     };
 
@@ -59,7 +60,19 @@ export default function Save({ route, navigation }) {
         caption,
         creation: firebase.firestore.FieldValue.serverTimestamp(),
       })
-      .then(() => navigation.popToTop())
+      .then((res) => {
+        const id = res.ZE.path.segments.pop();
+        const creation = Date.now();
+        const newPost = {
+          id,
+          creation,
+          downloadURL,
+          caption,
+        };
+        // console.log(newPost);
+        addPost(newPost);
+        navigation.navigate("Feed");
+      })
       .catch((error) => console.log(error));
   };
 
@@ -101,3 +114,5 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
 });
+
+export default connect(null, { addPost })(Save);

@@ -28,18 +28,29 @@ export const fetchUserPosts = () => {
       .collection("posts")
       .doc(firebase.auth().currentUser.uid)
       .collection("userPosts")
-      .orderBy("creation", "asc")
+      .orderBy("creation", "desc")
       .get()
       .then((snapshot) => {
         let posts = snapshot.docs.map((doc) => {
-          let data = doc.data();
+          let { caption, downloadURL, creation } = doc.data();
+          creation = creation.seconds;
           let id = doc.id;
-          return { id, ...data };
+          return {
+            id,
+            creation,
+            caption,
+            downloadURL,
+          };
         });
-        dispatch({
-          type: USER_POST_STATE_CHANGE,
-          payload: posts,
-        });
+        dispatch(addPost(posts));
       });
+  };
+};
+
+export const addPost = (posts) => {
+  console.log("add posssssst");
+  return {
+    type: USER_POST_STATE_CHANGE,
+    payload: posts,
   };
 };

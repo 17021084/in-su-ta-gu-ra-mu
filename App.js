@@ -6,6 +6,10 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+//fix warnning
+// import { LogBox } from "react-native";
+// LogBox.ignoreLogs(["Setting a timer"]);
+
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
@@ -83,11 +87,7 @@ class App extends Component {
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName={"Main"}>
-            <Stack.Screen
-              name="Main"
-              component={Main}
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="Main" component={Main} />
             <Stack.Screen
               name="Add_No_Buttom_Tab"
               component={Add}
