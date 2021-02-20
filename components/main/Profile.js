@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   ActivityIndicator,
+  Button,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -17,14 +18,15 @@ import * as firebase from "firebase";
 const windowWidth = Dimensions.get("window").width;
 
 function Profile({ currentUser, posts, route }) {
-  const userParamsId = route.params.uid;
+  const paramUserId = route.params.uid;
   const [userPosts, setUserPosts] = useState([]);
   const [user, setUser] = useState(null);
+  const [following, setFollowing] = useState(false);
 
   useEffect(() => {
     // console.log(currentUser);
     // console.log(route.params.uid);
-    // if (userParamsId === firebase.auth().currentUser.uid) {
+    // if (paramUserId === firebase.auth().currentUser.uid) {
     //   setUser(currentUser);
     //   setUserPosts(posts);
     // } else {
@@ -32,7 +34,7 @@ function Profile({ currentUser, posts, route }) {
     firebase
       .firestore()
       .collection("users")
-      .doc(userParamsId)
+      .doc(paramUserId)
       .get()
       .then((snapshot) => {
         if (snapshot.exists) {
@@ -44,7 +46,7 @@ function Profile({ currentUser, posts, route }) {
     firebase
       .firestore()
       .collection("posts")
-      .doc(userParamsId)
+      .doc(paramUserId)
       .collection("userPosts")
       .orderBy("creation", "desc")
       .get()
@@ -63,7 +65,26 @@ function Profile({ currentUser, posts, route }) {
         setUserPosts(posts);
       });
     // }
-  }, [userParamsId]);
+  }, [paramUserId]);
+
+  const onFollow = () => {
+    firebase
+      .firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      .doc(paramUserId)
+      .set({});
+  };
+  const onUnFollow = () => {
+    firebase
+      .firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      .doc(paramUserId)
+      .delete({});
+  };
 
   if (user === null) {
     return <ActivityIndicator />;
@@ -73,6 +94,15 @@ function Profile({ currentUser, posts, route }) {
       <View style={styles.containerInfor}>
         <Text>{user.name}</Text>
         <Text>{user.email}</Text>
+        {paramUserId !== firebase.auth().currentUser.uid ? (
+          <View>
+            {following ? (
+              <Button title="Unfollow" onPress={onFollow} />
+            ) : (
+              <Button title="Follow" onPress={onUnFollow} />
+            )}
+          </View>
+        ) : null}
       </View>
 
       <View style={styles.containerGallery}>
