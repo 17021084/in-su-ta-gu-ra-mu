@@ -17,7 +17,7 @@ import * as firebase from "firebase";
 
 const windowWidth = Dimensions.get("window").width;
 
-function Profile({ currentUser, posts, route }) {
+function Profile({ currentUser, posts, route, followingList }) {
   const paramUserId = route.params.uid;
   const [userPosts, setUserPosts] = useState([]);
   const [user, setUser] = useState(null);
@@ -30,7 +30,7 @@ function Profile({ currentUser, posts, route }) {
     //   setUser(currentUser);
     //   setUserPosts(posts);
     // } else {
-    console.log("profile else");
+    // console.log("profile else");
     firebase
       .firestore()
       .collection("users")
@@ -65,7 +65,13 @@ function Profile({ currentUser, posts, route }) {
         setUserPosts(posts);
       });
     // }
-  }, [paramUserId]);
+
+    if (followingList.indexOf(paramUserId) > -1) {
+      setFollowing(true);
+    } else {
+      setFollowing(false);
+    }
+  }, [paramUserId, posts, followingList]);
 
   const onFollow = () => {
     firebase
@@ -83,7 +89,7 @@ function Profile({ currentUser, posts, route }) {
       .doc(firebase.auth().currentUser.uid)
       .collection("userFollowing")
       .doc(paramUserId)
-      .delete({});
+      .delete();
   };
 
   if (user === null) {
@@ -97,9 +103,9 @@ function Profile({ currentUser, posts, route }) {
         {paramUserId !== firebase.auth().currentUser.uid ? (
           <View>
             {following ? (
-              <Button title="Unfollow" onPress={onFollow} />
+              <Button title="Unfollow" onPress={onUnFollow} />
             ) : (
-              <Button title="Follow" onPress={onUnFollow} />
+              <Button title="Follow" onPress={onFollow} />
             )}
           </View>
         ) : null}
@@ -146,6 +152,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     currentUser: state.userState.currentUser,
     posts: state.userState.posts,
+    followingList: state.userState.following,
   };
 };
 

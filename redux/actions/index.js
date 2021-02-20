@@ -1,5 +1,9 @@
 import firebase from "firebase";
-import { USER_STATE_CHANGE, USER_POST_STATE_CHANGE } from "../constants";
+import {
+  USER_STATE_CHANGE,
+  USER_POST_STATE_CHANGE,
+  USER_FOLLOWING_STATE_CHANGE,
+} from "../constants";
 
 export const fetchUser = () => {
   return (dispatch) => {
@@ -44,6 +48,29 @@ export const fetchUserPosts = () => {
         });
         dispatch(addPost(posts));
       });
+  };
+};
+export const fetchUserFollowing = () => {
+  return (dispatch) => {
+    firebase
+      .firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      // whever collection change (set or delete it will run )
+      .onSnapshot((snapshot) => {
+        let listUsers = snapshot.docs.map((doc) => {
+          return doc.id;
+        });
+        dispatch(userFollowingChange(listUsers));
+      });
+  };
+};
+
+const userFollowingChange = (listFollowing) => {
+  return {
+    type: USER_FOLLOWING_STATE_CHANGE,
+    payload: listFollowing,
   };
 };
 

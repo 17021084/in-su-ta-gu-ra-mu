@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { Button, Text, View } from "react-native";
 import { connect } from "react-redux";
-import { fetchUser, fetchUserPosts } from "../redux/actions";
+import {
+  fetchUser,
+  fetchUserPosts,
+  fetchUserFollowing,
+} from "../redux/actions";
 import { bindActionCreators } from "redux";
 import firebase from "firebase";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
@@ -19,6 +23,7 @@ class Main extends Component {
   componentDidMount() {
     this.props.fetchUser();
     this.props.fetchUserPosts();
+    this.props.fetchUserFollowing();
   }
   onPressLogOut() {
     firebase
@@ -114,6 +119,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({ fetchUser, fetchUserPosts }, dispatch);
+  bindActionCreators(
+    { fetchUser, fetchUserPosts, fetchUserFollowing },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
