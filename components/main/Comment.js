@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TextInput, Button } from "react-native";
 import { useEffect, useState } from "react";
 import firebase from "firebase";
 require("firebase/firestore");
@@ -31,9 +31,33 @@ export default function Comment({ route }) {
     }
   }, [route.params.postId]);
 
+  const postComments = () => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(route.params.uid)
+      .collection("userPosts")
+      .doc(route.params.postId)
+      .collection("comments")
+      .add({
+        creator: firebase.auth().currentUser.uid,
+        text,
+      });
+  };
+
   return (
     <View>
-      <Text>commnetttt screennn</Text>
+      <Text>Leave your comment in here!! </Text>
+      <View>
+        <TextInput
+          placeholder="what are you thinking..."
+          value={text}
+          onChangeText={(text) => {
+            setText(text);
+          }}
+        />
+        <Button title="submit" onPress={postComments} />
+      </View>
       <FlatList
         data={comments}
         horizontal={false}
