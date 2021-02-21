@@ -17,7 +17,7 @@ import * as firebase from "firebase";
 
 const windowWidth = Dimensions.get("window").width;
 
-function Feed({ currentUser, route, followingList, usersLoaded, users }) {
+function Feed({ currentUser, navigation, followingList, usersLoaded, users }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -40,6 +40,10 @@ function Feed({ currentUser, route, followingList, usersLoaded, users }) {
     }
   }, [usersLoaded]);
 
+  const viewComment = (postId, uid) => {
+    navigation.navigate("Comment", { postId, uid });
+  };
+
   return (
     <View style={styles.container}>
       {loading ? (
@@ -61,6 +65,9 @@ function Feed({ currentUser, route, followingList, usersLoaded, users }) {
                   source={{ uri: item.downloadURL }}
                   style={styles.image}
                 />
+                <Text onPress={() => viewComment(item.id, item.user.uid)}>
+                  View Comment ...
+                </Text>
               </View>
             )}
           />
@@ -80,6 +87,7 @@ const styles = StyleSheet.create({
   },
   containerImage: {
     flex: 1,
+    marginVertical: 10,
   },
   image: {
     flex: 1,
@@ -111,8 +119,3 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default connect(mapStateToProps, null)(Feed);
-
-// <Button title="logout" onPress={this.signOut.bind(this)} />
-// signOut() {
-//   firebase.auth().signOut();
-// }

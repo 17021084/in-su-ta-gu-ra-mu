@@ -152,8 +152,8 @@ export const fetchUserFollowingPosts = (uid) => {
         });
 
         // get all global state
-        console.log("getState()");
-        console.log(getState());
+        // console.log("getState()");
+        // console.log(getState());
       });
   };
 };
