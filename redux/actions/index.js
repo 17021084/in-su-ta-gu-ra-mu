@@ -66,6 +66,10 @@ export const fetchUserFollowing = () => {
           return doc.id;
         });
         dispatch(userFollowingChange(listUsers));
+
+        // because we use mongo DB so. we must to get following user id, then each of these we fetch its posts
+        // fetch following user -> each of them fetch its userData (save in users list of userSreducer)
+        // and inside action fetch usersdata call fetch usefollowing posts
         for (let i = 0; i < listUsers.length; ++i) {
           dispatch(fetchUsersData(listUsers[i]));
         }
@@ -86,7 +90,7 @@ export const addPost = (posts) => {
     payload: posts,
   };
 };
-
+// fetch user data of following user
 const fetchUsersData = (uid) => {
   console.log("fetchUsersData");
   return (dispatch, getState) => {
@@ -107,7 +111,7 @@ const fetchUsersData = (uid) => {
               type: USERS_DATA_STATE_CHANGE,
               payload: user,
             });
-            console.log(user);
+            // console.log(user);
             dispatch(fetchUserFollowingPosts(user.uid));
           } else {
             console.log("does not exist");
