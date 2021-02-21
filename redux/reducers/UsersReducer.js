@@ -2,7 +2,7 @@ import { USERS_DATA_STATE_CHANGE, USERS_POST_STATE_CHANGE } from "../constants";
 
 const initialState = {
   users: [],
-  usersLoaded: 0,
+  usersFollowingLoaded: 0,
 };
 
 export default (state = initialState, action) => {
@@ -13,7 +13,7 @@ export default (state = initialState, action) => {
       let { payload } = action;
       return {
         ...state,
-        usersLoaded: state.usersLoaded + 1,
+        usersFollowingLoaded: state.usersFollowingLoaded + 1,
         users: state.users.map((user) =>
           user.uid === payload.uid ? { ...user, posts: payload.posts } : user
         ),

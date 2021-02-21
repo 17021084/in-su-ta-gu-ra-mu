@@ -2,15 +2,36 @@ import React from "react";
 import { View, Text, FlatList, TextInput, Button } from "react-native";
 import { useEffect, useState } from "react";
 import firebase from "firebase";
+import { connect } from "react-redux";
+import bindActionCreators from "redux";
 require("firebase/firestore");
+import { fetchUsersData } from "../../redux/actions";
 
-export default function Comment({ route }) {
+function Comment({ route, users, fetchUsersData }) {
   const [comments, setComments] = useState([]);
   const [postId, setPostId] = useState("");
   const [text, setText] = useState("");
 
   useEffect(() => {
-    if (route.params.postId !== [postId]) {
+    // console.log(users);
+    function matchUserToComment(comments) {
+      for (let i = 0; i < comments.length; ++i) {
+        if (comments[i].hasOwnProperty("user")) {
+          continue;
+        }
+
+        const user = users.find((x) => x.uid === comments[i].creator);
+        // neu ko co user dang follow  thi fetch ve va ko lay post nua
+        if (user === undefined) {
+          fetchUsersData(comments[i].creator, false);
+        } else {
+          comments[i].user = user;
+        }
+      }
+      setComments(comments);
+    }
+
+    if (route.params.postId !== postId) {
       firebase
         .firestore()
         .collection("posts")
@@ -25,11 +46,13 @@ export default function Comment({ route }) {
             const id = doc.id;
             return { id, ...data };
           });
-          setComments(comments);
-          setPostId(route.params.postId);
+          matchUserToComment(comments);
         });
+      setPostId(route.params.postId);
+    } else {
+      matchUserToComment(comments);
     }
-  }, [route.params.postId]);
+  }, [route.params.postId, users]);
 
   const postComments = () => {
     firebase
@@ -62,8 +85,21 @@ export default function Comment({ route }) {
         data={comments}
         horizontal={false}
         numColumns={1}
-        renderItem={({ item }) => <Text>{item.text}</Text>}
+        renderItem={({ item }) => (
+          <View>
+            {item.user !== undefined ? <Text>{item.user.name} </Text> : null}
+            <Text>{item.text}</Text>
+          </View>
+        )}
       />
     </View>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    users: state.usersState.users,
+  };
+};
+
+export default connect(mapStateToProps, { fetchUsersData })(Comment);

@@ -17,13 +17,13 @@ import * as firebase from "firebase";
 
 const windowWidth = Dimensions.get("window").width;
 
-function Feed({ currentUser, navigation, followingList, usersLoaded, users }) {
+function Feed({ currentUser, navigation, followingList, usersFollowingLoaded, users }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
     let posts = [];
-    if (usersLoaded === followingList.length) {
+    if (usersFollowingLoaded === followingList.length) {
       for (let i = 0; i < followingList.length; ++i) {
         const user = users.find((el) => el.uid === followingList[i]);
 
@@ -38,7 +38,7 @@ function Feed({ currentUser, navigation, followingList, usersLoaded, users }) {
       setPosts(posts);
       setLoading(false);
     }
-  }, [usersLoaded]);
+  }, [usersFollowingLoaded]);
 
   const viewComment = (postId, uid) => {
     navigation.navigate("Comment", { postId, uid });
@@ -114,7 +114,7 @@ const mapStateToProps = (state, ownProps) => {
     currentUser: state.userState.currentUser,
     followingList: state.userState.following,
     users: state.usersState.users,
-    usersLoaded: state.usersState.usersLoaded,
+    usersFollowingLoaded: state.usersState.usersFollowingLoaded,
   };
 };
 

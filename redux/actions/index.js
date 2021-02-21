@@ -1,5 +1,4 @@
 import firebase from "firebase";
-import { cos } from "react-native-reanimated";
 import {
   USER_STATE_CHANGE,
   USER_POST_STATE_CHANGE,
@@ -71,7 +70,7 @@ export const fetchUserFollowing = () => {
         // fetch following user -> each of them fetch its userData (save in users list of userSreducer)
         // and inside action fetch usersdata call fetch usefollowing posts
         for (let i = 0; i < listUsers.length; ++i) {
-          dispatch(fetchUsersData(listUsers[i]));
+          dispatch(fetchUsersData(listUsers[i], true));
         }
       });
   };
@@ -91,7 +90,7 @@ export const addPost = (posts) => {
   };
 };
 // fetch user data of following user
-const fetchUsersData = (uid) => {
+export const fetchUsersData = (uid, getPosts) => {
   console.log("fetchUsersData");
   return (dispatch, getState) => {
     // check xem lieu thang dang follow co trong list ko, neu co roi thi ko fetch
@@ -112,11 +111,14 @@ const fetchUsersData = (uid) => {
               payload: user,
             });
             // console.log(user);
-            dispatch(fetchUserFollowingPosts(user.uid));
+            // dispatch(fetchUserFollowingPosts(user.uid));
           } else {
             console.log("does not exist");
           }
         });
+      if (getPosts) {
+        dispatch(fetchUserFollowingPosts(uid));
+      }
     }
   };
 };
