@@ -1,6 +1,6 @@
 # Instagram- clone main function
 
-I just focus to make functions. I didnt focus to make UI
+I just focus to make functions. I didnt focus UI
 
 ### How to Run it
 
@@ -55,5 +55,35 @@ Use should run this app in real device.because in web or simulator, you cant use
 5. Display feed.
 6. View and add comments.
 7. follow and unfollow
+
+### Demo screen
+
+<div>
+<image 
+style = ' height:300px'
+title ='splash'
+src='./demo-screen/splash.png'
+/>
+<image 
+style = ' height:300px'
+title ='splash'
+src='./demo-screen/Simulator Screen Shot - iPhone 11 - 2021-02-22 at 09.10.26.png'
+/>
+<image 
+style = ' height:300px'
+title ='splash'
+src='./demo-screen/Simulator Screen Shot - iPhone 11 - 2021-02-22 at 09.10.41.png'
+/>
+<image 
+style = ' height:300px'
+title ='splash'
+src='./demo-screen/Simulator Screen Shot - iPhone 11 - 2021-02-22 at 09.11.10.png'
+/>
+<image 
+style = ' height:300px'
+title ='splash'
+src='./demo-screen/Simulator Screen Shot - iPhone 11 - 2021-02-22 at 09.11.17.png'
+/>
+</div>
 
 I following this tutorial [Freecodecamp](https://www.youtube.com/watch?v=1hPgQWbWmEk&ab_channel=freeCodeCamp.org)
