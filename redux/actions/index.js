@@ -1,5 +1,4 @@
 import firebase from "firebase";
-import { cos } from "react-native-reanimated";
 import {
   USER_STATE_CHANGE,
   USER_POST_STATE_CHANGE,
@@ -92,7 +91,6 @@ export const addPost = (posts) => {
 };
 // fetch user data of following user
 const fetchUsersData = (uid) => {
-  console.log("fetchUsersData");
   return (dispatch, getState) => {
     // check xem lieu thang dang follow co trong list ko, neu co roi thi ko fetch
     const found = getState().usersState.users.some((el) => el.id === uid);
@@ -122,7 +120,6 @@ const fetchUsersData = (uid) => {
 };
 
 export const fetchUserFollowingPosts = (uid) => {
-  console.log("fetchUserFollowingPosts ");
   return (dispatch, getState) => {
     firebase
       .firestore()
@@ -152,8 +149,8 @@ export const fetchUserFollowingPosts = (uid) => {
         });
 
         // get all global state
-        console.log("getState()");
-        console.log(getState());
+        // console.log("getState()");
+        // console.log(getState());
       });
   };
 };
