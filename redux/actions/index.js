@@ -90,8 +90,9 @@ export const addPost = (posts) => {
   };
 };
 // fetch user data of following user
+
 export const fetchUsersData = (uid, getPosts) => {
-  console.log("fetchUsersData");
+ 
   return (dispatch, getState) => {
     // check xem lieu thang dang follow co trong list ko, neu co roi thi ko fetch
     const found = getState().usersState.users.some((el) => el.id === uid);
@@ -124,7 +125,6 @@ export const fetchUsersData = (uid, getPosts) => {
 };
 
 export const fetchUserFollowingPosts = (uid) => {
-  console.log("fetchUserFollowingPosts ");
   return (dispatch, getState) => {
     firebase
       .firestore()
