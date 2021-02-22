@@ -17,13 +17,13 @@ import * as firebase from "firebase";
 
 const windowWidth = Dimensions.get("window").width;
 
-function Feed({ currentUser, route, followingList, usersLoaded, users }) {
+function Feed({ currentUser, navigation, followingList, usersFollowingLoaded, users }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
     let posts = [];
-    if (usersLoaded === followingList.length) {
+    if (usersFollowingLoaded === followingList.length) {
       for (let i = 0; i < followingList.length; ++i) {
         const user = users.find((el) => el.uid === followingList[i]);
 
@@ -38,7 +38,11 @@ function Feed({ currentUser, route, followingList, usersLoaded, users }) {
       setPosts(posts);
       setLoading(false);
     }
-  }, [usersLoaded]);
+  }, [usersFollowingLoaded]);
+
+  const viewComment = (postId, uid) => {
+    navigation.navigate("Comment", { postId, uid });
+  };
 
   return (
     <View style={styles.container}>
@@ -61,6 +65,9 @@ function Feed({ currentUser, route, followingList, usersLoaded, users }) {
                   source={{ uri: item.downloadURL }}
                   style={styles.image}
                 />
+                <Text onPress={() => viewComment(item.id, item.user.uid)}>
+                  View Comment ...
+                </Text>
               </View>
             )}
           />
@@ -80,6 +87,7 @@ const styles = StyleSheet.create({
   },
   containerImage: {
     flex: 1,
+    marginVertical: 10,
   },
   image: {
     flex: 1,
@@ -106,13 +114,8 @@ const mapStateToProps = (state, ownProps) => {
     currentUser: state.userState.currentUser,
     followingList: state.userState.following,
     users: state.usersState.users,
-    usersLoaded: state.usersState.usersLoaded,
+    usersFollowingLoaded: state.usersState.usersFollowingLoaded,
   };
 };
 
 export default connect(mapStateToProps, null)(Feed);
-
-// <Button title="logout" onPress={this.signOut.bind(this)} />
-// signOut() {
-//   firebase.auth().signOut();
-// }

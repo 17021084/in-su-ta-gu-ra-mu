@@ -23,6 +23,7 @@ import Login from "./components/auth/Login";
 import Save from "./components/main/Save";
 import Main from "./components/Main";
 import Add from "./components/main/Add";
+import Comment from "./components/main/Comment";
 
 const Stack = createStackNavigator();
 
@@ -102,6 +103,14 @@ class App extends Component {
               options={{
                 headerShown: true,
                 headerTitle: "Save Post",
+              }}
+            />
+            <Stack.Screen
+              name="Comment"
+              component={Comment}
+              options={{
+                headerShown: true,
+                headerTitle: "Comment Screen",
               }}
             />
           </Stack.Navigator>
