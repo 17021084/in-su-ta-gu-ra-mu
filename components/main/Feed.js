@@ -17,66 +17,86 @@ import * as firebase from "firebase";
 
 const windowWidth = Dimensions.get("window").width;
 
-function Feed({ currentUser, navigation, followingList, usersFollowingLoaded, users }) {
+function Feed({
+  currentUser,
+  navigation,
+  followingList,
+  usersFollowingLoaded,
+  feed,
+}) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
-    let posts = [];
-    if (usersFollowingLoaded === followingList.length) {
-      for (let i = 0; i < followingList.length; ++i) {
-        const user = users.find((el) => el.uid === followingList[i]);
-
-        if (user) {
-          posts = [...posts, ...user.posts];
-        }
-      }
+    if (
+      usersFollowingLoaded === followingList.length &&
+      followingList.length !== 0
+    ) {
       //sort
-      posts.sort((x, y) => {
+      feed.sort((x, y) => {
         return x.creation - y.creation;
       });
-      setPosts(posts);
+      setPosts(feed);
       setLoading(false);
     }
-  }, [usersFollowingLoaded]);
+    // if (posts) {
+    //   console.log("post");
+    //   console.log(posts[0]);
+    // }
+  }, [usersFollowingLoaded, feed]);
 
   const viewComment = (postId, uid) => {
     navigation.navigate("Comment", { postId, uid });
   };
+  const likePosts = (postId, userId) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(userId)
+      .collection("userPosts")
+      .doc(postId)
+      .collection("likes")
+      .doc(firebase.auth().currentUser.uid)
+      .set({});
+  };
+  const dislikePosts = (postId, userId) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(userId)
+      .collection("userPosts")
+      .doc(postId)
+      .collection("likes")
+      .doc(firebase.auth().currentUser.uid)
+      .delete();
+  };
 
-  return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        <View style={styles.containerGallery}>
-          <FlatList
-            numColumns={1}
-            horizontal={false}
-            data={posts}
-            renderItem={({ item }) => (
-              <View style={styles.containerImage}>
-                <Text style={styles.writer}>{item.user.name}</Text>
-                <Text style={styles.caption}>{item.caption}</Text>
-                <Text style={styles.date}>
-                  {new Date(item.creation.seconds).toLocaleDateString()}
-                </Text>
-                <Image
-                  source={{ uri: item.downloadURL }}
-                  style={styles.image}
-                />
-                <Text onPress={() => viewComment(item.id, item.user.uid)}>
-                  View Comment ...
-                </Text>
-              </View>
-            )}
-          />
-        </View>
-      )}
-    </View>
-  );
+  return <View />;
 }
-
+// <View style={styles.container}>
+//       {loading === 0 ? (
+//         <ActivityIndicator size="large" />
+//       ) : (
+//         <View style={styles.containerGallery}>
+//           <FlatList
+//             numColumns={1}
+//             horizontal={false}
+//             data={posts}
+//             renderItem={({ item }) => (
+//               <View style={styles.containerImage}>
+//                 <Image
+//                   source={{ uri: item.downloadURL }}
+//                   style={styles.image}
+//                 />
+//                 <Text onPress={() => viewComment(item.id, item.user.uid)}>
+//                   View Comment ...
+//                 </Text>
+//               </View>
+//             )}
+//           />
+//         </View>
+//       )}
+//     </View>
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -113,7 +133,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     currentUser: state.userState.currentUser,
     followingList: state.userState.following,
-    users: state.usersState.users,
+    feed: state.usersState.feed,
     usersFollowingLoaded: state.usersState.usersFollowingLoaded,
   };
 };

@@ -3,6 +3,7 @@ import {
   USER_STATE_CHANGE,
   USER_POST_STATE_CHANGE,
   USER_FOLLOWING_STATE_CHANGE,
+  CLEAR_DATA,
 } from "../constants";
 
 const initialState = {
@@ -19,6 +20,8 @@ export default (state = initialState, action) => {
       return { ...state, posts: action.payload };
     case USER_FOLLOWING_STATE_CHANGE:
       return { ...state, following: action.payload };
+    case CLEAR_DATA:
+      return initialState;
     default:
       return state;
   }

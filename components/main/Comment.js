@@ -3,7 +3,6 @@ import { View, Text, FlatList, TextInput, Button } from "react-native";
 import { useEffect, useState } from "react";
 import firebase from "firebase";
 import { connect } from "react-redux";
-import bindActionCreators from "redux";
 require("firebase/firestore");
 import { fetchUsersData } from "../../redux/actions";
 
