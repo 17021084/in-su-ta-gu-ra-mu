@@ -1,8 +1,11 @@
 import firebase from "firebase";
+import { cos } from "react-native-reanimated";
 import {
   USER_STATE_CHANGE,
   USER_POST_STATE_CHANGE,
   USER_FOLLOWING_STATE_CHANGE,
+  USERS_POST_STATE_CHANGE,
+  USERS_DATA_STATE_CHANGE,
 } from "../constants";
 
 export const fetchUser = () => {
@@ -63,6 +66,13 @@ export const fetchUserFollowing = () => {
           return doc.id;
         });
         dispatch(userFollowingChange(listUsers));
+
+        // because we use mongo DB so. we must to get following user id, then each of these we fetch its posts
+        // fetch following user -> each of them fetch its userData (save in users list of userSreducer)
+        // and inside action fetch usersdata call fetch usefollowing posts
+        for (let i = 0; i < listUsers.length; ++i) {
+          dispatch(fetchUsersData(listUsers[i]));
+        }
       });
   };
 };
@@ -75,9 +85,75 @@ const userFollowingChange = (listFollowing) => {
 };
 
 export const addPost = (posts) => {
-  console.log("add posssssst");
   return {
     type: USER_POST_STATE_CHANGE,
     payload: posts,
+  };
+};
+// fetch user data of following user
+const fetchUsersData = (uid) => {
+  console.log("fetchUsersData");
+  return (dispatch, getState) => {
+    // check xem lieu thang dang follow co trong list ko, neu co roi thi ko fetch
+    const found = getState().usersState.users.some((el) => el.id === uid);
+    if (!found) {
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.exists) {
+            let user = snapshot.data();
+            user.uid = snapshot.id;
+            // console.log(snapshot);
+            dispatch({
+              type: USERS_DATA_STATE_CHANGE,
+              payload: user,
+            });
+            // console.log(user);
+            dispatch(fetchUserFollowingPosts(user.uid));
+          } else {
+            console.log("does not exist");
+          }
+        });
+    }
+  };
+};
+
+export const fetchUserFollowingPosts = (uid) => {
+  console.log("fetchUserFollowingPosts ");
+  return (dispatch, getState) => {
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(uid)
+      .collection("userPosts")
+      .orderBy("creation", "desc")
+      .get()
+      .then((snapshot) => {
+        const uid = snapshot.query.EP.path.segments[1];
+
+        const user = getState().usersState.users.find((el) => el.uid === uid);
+
+        let posts = snapshot.docs.map((doc) => {
+          let data = doc.data();
+          let id = doc.id;
+          return {
+            id,
+            ...data,
+            user,
+          };
+        });
+
+        dispatch({
+          type: USERS_POST_STATE_CHANGE,
+          payload: { posts, uid },
+        });
+
+        // get all global state
+        console.log("getState()");
+        console.log(getState());
+      });
   };
 };

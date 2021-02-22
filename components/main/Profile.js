@@ -91,7 +91,9 @@ function Profile({ currentUser, posts, route, followingList }) {
       .doc(paramUserId)
       .delete();
   };
-
+  function signOut() {
+    firebase.auth().signOut();
+  }
   if (user === null) {
     return <ActivityIndicator />;
   }
@@ -108,7 +110,9 @@ function Profile({ currentUser, posts, route, followingList }) {
               <Button title="Follow" onPress={onFollow} />
             )}
           </View>
-        ) : null}
+        ) : (
+          <Button title="logout" onPress={signOut} />
+        )}
       </View>
 
       <View style={styles.containerGallery}>
